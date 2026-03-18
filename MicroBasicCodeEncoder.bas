@@ -1,20 +1,25 @@
-' MicroBasic Script for Raytheon UGV
-' Goal: Monitor encoders and provide a safety watchdog
+' MicroBasic Script for UGV Encoding
 
 top:
-    ' 1. Read Encoder Speed (RPM) for Channel 1 and 2
-    Speed1 = getvalue(_S, 1) 
-    Speed2 = getvalue(_S, 2)
+    ' Read Encoder Speed (RPM) for Channel 1 and 2
+    ' _S is a internal runtime ID for Speed; the 1 and 2 specify the specific channel.
+    rpmPPR1 = getvalue(_S, 1) 
+    rpmPPR2 = getvalue(_S, 2)
 
-    ' 2. Safety Check: If speed exceeds a "Dangerous" limit, E-Stop
-    ' (Useful for high-torque AmpFlow motors)
+    ' Safety Check in the case that we need to stop the UGV
+    ' 3500 is the RPM limit
+    ' setcommand changes a value
+    ' _G is the internal runtime ID for "Go"
+    ' 1 and 2 are the specific channel
+    ' 0 means no power
     if (Speed1 > 3500 or Speed2 > 3500) then
         setcommand(_G, 1, 0)
         setcommand(_G, 2, 0)
-        print("SAFETY CRITICAL: SPEED LIMIT EXCEEDED\r")
+        print(RPM/Speed exceeded, stopping\r")
     end if
 
-    ' 3. Heartbeat: If no command from Pi 5 for 500ms, Stop
+    ' If no command from Pi 5 for 500ms, stop is added incase of any mishaps 
+    ' _STW is the serial time watchdog; it basically is asking, "how long has it been since the pi last sent a command to channel 1 and 2?"
     if (getvalue(_STW, 1) > 500) then
         setcommand(_G, 1, 0)
         setcommand(_G, 2, 0)
