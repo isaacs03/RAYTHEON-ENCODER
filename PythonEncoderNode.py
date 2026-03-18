@@ -25,19 +25,20 @@ class UGVController:
         response = self.ser.read_all().decode()
         return response
 
-# --- Example Usage for your Mission ---
+# example
 ugv = UGVController()
 
 try:
     while True:
-        # 1. Command: Drive Forward at 30% power
+        # Command: Drive Forward at 30% power
         ugv.set_motor_speeds(300, 300)
         
-        # 2. Feedback: Ask where we are
+        # Feedback: Ask where we at
         pos = ugv.get_encoder_counts()
         print(f"Current Encoder Positions: {pos}")
         
-        time.sleep(0.1) # 10Hz Loop
+        time.sleep(0.1) 
 
 except KeyboardInterrupt:
-    ugv.set_motor_speeds(0, 0) # Hard stop on exit
+     # Hard stop on exit
+    ugv.set_motor_speeds(0, 0)
